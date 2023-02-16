@@ -1,2 +1,3 @@
-# rainmeter-plugin-net6-templates
-Templates/Examples to create rainmeter plugins with .NET 6
+# Rainmeter Plugin Examples/Templates for .NET 6
+
+# WIP
