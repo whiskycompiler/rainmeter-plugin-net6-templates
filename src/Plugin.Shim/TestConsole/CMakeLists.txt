@@ -22,8 +22,6 @@ cmake_minimum_required (VERSION 3.16)
 file(TO_CMAKE_PATH $ENV{RainmeterPluginSdkDir} RainmeterPluginSdkDir)
 file(TO_CMAKE_PATH $ENV{NetCoreNativeRuntimePackDir} NetCoreNativeRuntimePackDir)
 
-set(MyLib_SRC ${MyLib_DIR}/MyLib.cpp)
-
 # Add directories with headers to include
 include_directories(
 	"${RainmeterPluginSdkDir}/API"
