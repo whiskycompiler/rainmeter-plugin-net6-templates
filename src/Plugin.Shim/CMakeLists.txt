@@ -20,6 +20,8 @@
 cmake_minimum_required (VERSION 3.8)
 
 SET(PLUGIN_NAME "TestPlugin" CACHE STRING "Name of the dotnet plugin folder and assembly")
+SET(PLUGIN_VERSION "1.0.0.0" CACHE STRING "Version of the plugin")
+SET(COPYRIGHT "@ 2023 - whiskycompiler" CACHE STRING "Copyright notice of the plugin")
 
 project ("RainmeterPluginShim")
 

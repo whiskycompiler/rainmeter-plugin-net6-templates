@@ -31,8 +31,9 @@ The constant must have the same name as the projects root namespace because the 
 0. I would recommend to read "How does it work?" first so you don't accidentally break the plugin build process. 
 1. Choose any <code>Plugin.Example...</code> as a starting or reference point. You may delete any other project starting with <code>Plugin.Example</code>.
 2. You can develop your plugin inside of the chosen example or by using it as a reference.
-3. Get the binaries to put in the plugin folder using the Visual Studio publish action. By default they will be placed in the example repository root "publish/{project name}" directory. You need at least the "{project name}.dll" and the folder with the same name.
-4. Put the files in the Rainmeter plugin folder and use an example skin (see folder in repository root) or your own skin to load the the plugin.
+3. Set the version and copyright of your plugin in the .csproj file. 
+4. Get the binaries to put in the plugin folder using the Visual Studio publish action. By default they will be placed in the example repository root "publish/{project name}" directory. You need at least the "{project name}.dll" and the folder with the same name.
+5. Put the files in the Rainmeter plugin folder and use an example skin (see folder in repository root) or your own skin to load the the plugin.
 
 ### Custom Functions
 In order to use the Rainmeter custom function feature you have two options:
@@ -51,5 +52,4 @@ Further details are available as comments in the necessary places in the code.
 - some TODOs left in the code
 - performance compared to .NET Framework 4.x plugins unknown
 - not sure if this is/will be compatible with the Rainmeter skin installer
-    - version of the shim is not dynamic yet
 - currently only builds x64

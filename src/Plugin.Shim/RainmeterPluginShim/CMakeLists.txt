@@ -36,7 +36,10 @@ add_library (
 	"MeasureShim.cpp"
 )
 
-add_compile_definitions(PLUGIN_NAME=${PLUGIN_NAME})
+add_compile_definitions(
+	PLUGIN_NAME=${PLUGIN_NAME}
+	PLUGIN_VERSION=${PLUGIN_VERSION}
+	COPYRIGHT=${COPYRIGHT})
 
 # Declare resoure files
 target_sources(PluginShim PRIVATE "Plugin.rc")

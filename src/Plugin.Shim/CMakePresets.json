@@ -10,7 +10,9 @@
                                  "cacheVariables":  {
                                                         "CMAKE_C_COMPILER":  "cl.exe",
                                                         "CMAKE_CXX_COMPILER":  "cl.exe",
-                                                        "PLUGIN_NAME":  "Plugin.Example.SystemVersion"
+                                                        "PLUGIN_NAME":  "Plugin.Example.SystemVersion",
+                                                        "PLUGIN_VERSION":  "1.0.1",
+                                                        "COPYRIGHT":  "@ 2023 - whiskycompiler"
                                                     },
                                  "condition":  {
                                                    "type":  "equals",

@@ -7,9 +7,11 @@
 
 		<EnableDynamicLoading>true</EnableDynamicLoading>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-	</PropertyGroup>
 
-	<PropertyGroup>
+		<VersionPrefix>1.0.1</VersionPrefix>
+		<Product>$(AssemblyName)</Product>
+		<Copyright>@ 2023 - whiskycompiler</Copyright>
+
 		<ShimInstallDir>$(SolutionDir)../../bin/Plugin.Shim/x64-release/PluginShim</ShimInstallDir>
 	</PropertyGroup>
 
@@ -23,7 +25,7 @@
 	</Target>
 
 	<Target Name="PublishShim" AfterTargets="Publish">
-		<Exec Command="Scripts/AfterPublish.bat $(SolutionDir) $(MSBuildProjectName)" />
-		<Exec Command='xcopy /I /Y "$(ShimInstallDir)" "$(PublishDir)../"' />
+		<Exec Command="Scripts/AfterPublish.bat $(SolutionDir) &quot;$(MSBuildProjectName)&quot; &quot;$(VersionPrefix)&quot; &quot;$(Copyright)&quot;" />
+		<Exec Command="xcopy /I /Y &quot;$(ShimInstallDir)&quot; &quot;$(PublishDir)../&quot;" />
 	</Target>
 </Project>
