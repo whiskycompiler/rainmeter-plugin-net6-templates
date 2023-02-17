@@ -41,7 +41,10 @@ public static class Plugin
     public delegate void FinalizeDelegate(IntPtr measureData);
     public delegate IntPtr GetStringDelegate(IntPtr measureData);
     public delegate void ExecuteBangDelegate(IntPtr measureData, string args);
-    // TODO: custom function delegate
+    public delegate IntPtr CustomFuncDelegate(
+        IntPtr measurePointer,
+        int argc,
+        [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPWStr, SizeParamIndex = 1)] string[] arguments);
     #endregion
 
     /// <summary>
@@ -141,7 +144,6 @@ public static class Plugin
     }
 
     /// <summary>
-    /// TODO: readme
     /// Optional custom function that can be invoked in section variables.
     /// You can implement any number of them but you'll need to adjust some more code for it (see README.MD).
     /// Alternatively you can just proxy all your funtion through this one and distinguish them by arguments.

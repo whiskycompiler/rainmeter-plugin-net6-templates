@@ -34,6 +34,17 @@ The constant must have the same name as the projects root namespace because the 
 3. Get the binaries to put in the plugin folder using the Visual Studio publish action. By default they will be placed in the example repository root "publish/{project name}" directory. You need at least the "{project name}.dll" and the folder with the same name.
 4. Put the files in the Rainmeter plugin folder and use an example skin (see folder in repository root) or your own skin to load the the plugin.
 
+### Custom Functions
+In order to use the Rainmeter custom function feature you have two options:
+1. (C# only) Just use the existing <code>CustomFunc</code> and just differentiate the called method by parameters.
+2. (C# and C++) You add your custom function to the following files:
+    - Meausure.cs
+    - Plugin.cs
+    - Plugin.cpp (and .h if necessary)
+    - MeasureShim.cpp and MeasureShim.h
+
+Further details are available as comments in the necessary places in the code.
+
 <br/>
 
 ## Known Issues / Missing features
@@ -42,4 +53,3 @@ The constant must have the same name as the projects root namespace because the 
 - not sure if this is/will be compatible with the Rainmeter skin installer
     - version of the shim is not dynamic yet
 - currently only builds x64
-- Rainmeter custom function invocation is not implemeted yet

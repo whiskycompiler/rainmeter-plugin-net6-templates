@@ -1,4 +1,5 @@
 ﻿/* -----------------------------------------------------------------------
+	Copyright (C) 2017 Rainmeter Project Developers
 	Copyright (C) 2023 whiskycompiler
 
 	This file is part of "Plugin.Shim".
@@ -24,12 +25,6 @@
 #include "MeasureShim.hpp"
 
 #define DIR_SEPARATOR L'\\'
-
-// Overview: This is a blank canvas on which to build your plugin.
-
-// Note: GetString, ExecuteBang and an unnamed function for use as a section variable
-// have been commented out. Uncomment any functions as needed.
-// For more information, see the SDK docs: https://docs.rainmeter.net/developers/plugin/cpp/
 
 string_t* GetShimBinaryDirectory()
 {
@@ -110,11 +105,11 @@ PLUGIN_EXPORT void ExecuteBang(void* data, const LPCWSTR args)
 	measure->ExecuteBang(args);
 }
 
-//PLUGIN_EXPORT LPCWSTR (void* data, const int argc, const WCHAR* argv[])
-//{
-//	Measure* measure = (Measure*)data;
-//	return nullptr;
-//}
+PLUGIN_EXPORT LPCWSTR CustomFunc(void* data, const int argc, const WCHAR* argv[])
+{
+	const auto measure = static_cast<Measure*>(data);
+	return measure->CutomFunc(argc, argv);
+}
 
 PLUGIN_EXPORT void Finalize(void* data)
 {

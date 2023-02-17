@@ -26,3 +26,4 @@ PLUGIN_EXPORT void Reload(void* data, void* rm, double* maxValue);
 PLUGIN_EXPORT LPCWSTR GetString(void* data);
 PLUGIN_EXPORT void ExecuteBang(void* data, LPCWSTR args);
 PLUGIN_EXPORT void Finalize(void* data);
+PLUGIN_EXPORT LPCWSTR CustomFunc(void* data, int argc, const WCHAR* argv[]);

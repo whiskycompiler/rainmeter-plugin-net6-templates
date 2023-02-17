@@ -26,6 +26,7 @@ typedef double (CORECLR_DELEGATE_CALLTYPE* dotnet_plugin_update_fn)(void* data);
 typedef void (CORECLR_DELEGATE_CALLTYPE* dotnet_plugin_reload_fn)(void* data, void* rainmeter, double* maxValue);
 typedef LPCWSTR (CORECLR_DELEGATE_CALLTYPE* dotnet_plugin_get_string_fn)(void* data);
 typedef void (CORECLR_DELEGATE_CALLTYPE* dotnet_plugin_exec_bang_fn)(void* data, LPCWSTR args);
+typedef LPCWSTR (CORECLR_DELEGATE_CALLTYPE* dotnet_plugin_custom_func_fn)(void* data, int argc, const WCHAR* argv[]);
 typedef void (CORECLR_DELEGATE_CALLTYPE* dotnet_plugin_finalize_fn)(void* data);
 
 class Measure
@@ -40,6 +41,7 @@ public:
 	LPCWSTR GetString();
 	void ExecuteBang(LPCWSTR args);
 	void Finalize();
+	LPCWSTR CutomFunc(int argc, const WCHAR* argv[]);
 
 private:
 	// Pointer to the rainmeter measure
@@ -54,14 +56,17 @@ private:
 	// Update method of the dotnet plugin
 	dotnet_plugin_update_fn update = nullptr;
 
-	// Update method of the dotnet plugin
+	// Reload method of the dotnet plugin
 	dotnet_plugin_reload_fn reload = nullptr;
 
-	// Update method of the dotnet plugin
+	// GetString method of the dotnet plugin
 	dotnet_plugin_get_string_fn getString = nullptr;
 
-	// Update method of the dotnet plugin
+	// ExecuteBang method of the dotnet plugin
 	dotnet_plugin_exec_bang_fn executeBang = nullptr;
+
+	// CustomFunc method of the dotnet plugin
+	dotnet_plugin_custom_func_fn customFunc = nullptr;
 
 	// Finalize method of the dotnet plugin
 	dotnet_plugin_finalize_fn finalize = nullptr;

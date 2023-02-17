@@ -85,7 +85,7 @@ public sealed class Measure : IDisposable
     public IntPtr CustomFunc(string[] arguments)
     {
         _rainmeterMeasure.Log(RainmeterLogLevel.Debug, nameof(GetString));
-        return "Your custom invocation could be here!"
+        return $"Custom Func Arguments: {string.Join(", ", arguments)}"
             .RecyclePointerAndSetAsNewValue(ref _customFunctionBufferIntPtr);
     }
 }

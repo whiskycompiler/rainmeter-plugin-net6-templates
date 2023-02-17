@@ -27,14 +27,23 @@ int main()
 	Initialize(&data, nullptr);
 
 	Sleep(1000);
+
 	std::wcout << Update(data) << std::endl;
+
 	Sleep(1000);
+
+	constexpr int argc = 2;
+	const WCHAR* argv[argc] = { const_cast<WCHAR*>(L"Hello"), const_cast<WCHAR*>(L"Custom Function") };
+	std::wcout << CustomFunc(data, argc, argv) << std::endl;
 	std::wcout << GetString(data) << std::endl;
+
 	Sleep(1000);
+
 	std::wcout << Update(data) << std::endl;
+
 	Sleep(1000);
+
 	std::wcout << Update(data) << std::endl;
-	
 	std::wcout << GetString(data) << std::endl;
 
 

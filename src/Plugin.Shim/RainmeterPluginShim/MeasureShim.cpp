@@ -117,6 +117,22 @@ void Measure::ExecuteBang(const LPCWSTR args)
 	}
 }
 
+
+LPCWSTR Measure::CutomFunc(const int argc, const WCHAR* argv[])
+{
+	// If you want to create your own custom functions you can copy or modify this function.
+	// You just need to change the "entryPointName" parameter in the next line to the name of your own custom function
+	// in the C# plugin class and provide a new cache variable for the pointer (last parameter and following line).
+	// You can keep the "delegateName" as is if you want (signature of all functions is identical after all).
+	if (EnsureInitializedNetMethodPointer(L"CustomFunc", L"CustomFuncDelegate", reinterpret_cast<void**>(&customFunc)))
+	{
+		return customFunc(data, argc, argv);
+	}
+
+	RmLog(rainmeter, LOG_ERROR, L"Shim failed to get pointer to the CustomFunc method of the C# plugin!");
+	return nullptr;
+}
+
 bool Measure::EnsureInitializedNetMethodPointer(
 	const wchar_t* entryPointName,
 	const wchar_t* delegateName,
