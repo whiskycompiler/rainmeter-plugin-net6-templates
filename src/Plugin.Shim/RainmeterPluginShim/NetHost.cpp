@@ -44,14 +44,15 @@ int NetHost::GetMethodFromAssembly(
 	}
 
 	// STEP 2: Initialize and start the .NET Core runtime
-	const auto loadAssemblyAndGetFunctionPointer = GetAssemblyFunctionLoader(runtimeConfigPath);
-	if (loadAssemblyAndGetFunctionPointer == nullptr)
+	load_assembly_and_get_function_pointer_fn loadAssemblyAndGetFunctionPointer = nullptr;
+	auto result = GetAssemblyFunctionLoader(runtimeConfigPath, loadAssemblyAndGetFunctionPointer);
+	if (result != NETHOST_SUCCESS)
 	{
-		return NETHOST_ERROR_LOADCONF_TODO_REFACTOR;
+		return result;
 	}
 
 	// STEP 3: Load managed assembly and get function pointer to a managed method
-	const int result = loadAssemblyAndGetFunctionPointer(
+	result = loadAssemblyAndGetFunctionPointer(
 		binaryPath,
 		dotnetType,
 		methodName,
@@ -88,37 +89,39 @@ bool NetHost::LoadHostFxr()
 }
 
 // Load and initialize .NET Core and get desired function pointer for scenario
-load_assembly_and_get_function_pointer_fn NetHost::GetAssemblyFunctionLoader(const char_t* config_path)
+int NetHost::GetAssemblyFunctionLoader(
+	const char_t* config_path,
+	load_assembly_and_get_function_pointer_fn &loadAssemblyAndGetFunction)
 {
 	if (get_function_pointer_fptr)
 	{
-		return *get_function_pointer_fptr;
+		loadAssemblyAndGetFunction = *get_function_pointer_fptr;
+		return NETHOST_SUCCESS;
 	}
 
 	// Load .NET Core
 	hostfxr_handle cxt = nullptr;
-	int result = init_fptr(config_path, nullptr, &cxt);
+	init_fptr(config_path, nullptr, &cxt);
 	if (cxt == nullptr) // this is no nullptr only on success
 	{
-		// TODO: logging and error codes
-		//std::cerr << "Init failed: " << std::hex << std::showbase << rc << std::endl;
 		close_fptr(cxt);
-		return nullptr;
+		return NETHOST_ERROR_HOSTFXR_RUNTIME_INIT;
 	}
 
 	// Get the load assembly function pointer
-	result = get_delegate_fptr(
+	get_delegate_fptr(
 		cxt,
 		hdt_load_assembly_and_get_function_pointer,
 		reinterpret_cast<void**>(&get_function_pointer_fptr));
-		//&functionPointer);
-
-	// TODO: logging and error code
-	//if (rc != 0 || load_assembly_and_get_function_pointer == nullptr)
-	//    std::cerr << "Get delegate failed: " << std::hex << std::showbase << rc << std::endl;
-
 	close_fptr(cxt);
-	return get_function_pointer_fptr;
+
+	if (get_function_pointer_fptr)
+	{
+		loadAssemblyAndGetFunction = *get_function_pointer_fptr;
+		return NETHOST_SUCCESS;
+	}
+
+	return NETHOST_ERROR_GET_RUNTIME_DELEGATE;
 }
 
 bool NetHost::IsHostFxrLoaded() const

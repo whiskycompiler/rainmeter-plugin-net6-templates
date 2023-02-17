@@ -20,10 +20,11 @@
 #pragma once
 #include "include.hpp"
 
+constexpr auto NETHOST_SUCCESS = 0;
 constexpr auto NETHOST_ERROR_LOADFXR = 1;
-constexpr auto NETHOST_ERROR_LOADCONF_TODO_REFACTOR = 2;
-constexpr auto NETHOST_ERROR_LOADFUNC = 3;
-constexpr auto NETHOST_SUCCESS = 4;
+constexpr auto NETHOST_ERROR_LOADFUNC = 2;
+constexpr auto NETHOST_ERROR_HOSTFXR_RUNTIME_INIT = 3;
+constexpr auto NETHOST_ERROR_GET_RUNTIME_DELEGATE = 4;
 
 struct AssemblyInfo
 {
@@ -70,7 +71,9 @@ private:
 	bool LoadHostFxr();
 	[[nodiscard]] bool IsHostFxrLoaded() const;
 
-	load_assembly_and_get_function_pointer_fn GetAssemblyFunctionLoader(const char_t* config_path);
+	int GetAssemblyFunctionLoader(
+		const char_t* config_path,
+		load_assembly_and_get_function_pointer_fn& loadAssemblyAndGetFunction);
 
 	static void* SafeLoadLibrary(const char_t* path);
 	static void* GetExport(void* hLib, const char* name);

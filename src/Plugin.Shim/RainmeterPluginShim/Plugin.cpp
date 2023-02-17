@@ -69,9 +69,11 @@ string_t* GetShimBinaryDirectory()
 
 PLUGIN_EXPORT void Initialize(void** data, void* rm)
 {
-	const auto rootPath = *GetShimBinaryDirectory();
-	const auto pluginFilePath = rootPath + PLUGIN_NAME_STRING + DIR_SEPARATOR + PLUGIN_NAME_STRING;
+	const auto rootPath = GetShimBinaryDirectory();
+	const auto pluginFilePath = *rootPath + PLUGIN_NAME_STRING + DIR_SEPARATOR + PLUGIN_NAME_STRING;
 	const auto pluginType = string_t(PLUGIN_NAME_STRING) + L".NativeInterop.Plugin, " + PLUGIN_NAME_STRING;
+	delete rootPath;
+
 	const auto measure = new Measure(
 		string_t(pluginFilePath + L".dll"),
 		string_t(pluginFilePath + L".runtimeconfig.json"),
@@ -102,7 +104,7 @@ PLUGIN_EXPORT LPCWSTR GetString(void* data)
 	return measure->GetString();
 }
 
-PLUGIN_EXPORT void ExecuteBang(void* data, LPCWSTR args)
+PLUGIN_EXPORT void ExecuteBang(void* data, const LPCWSTR args)
 {
 	const auto measure = static_cast<Measure*>(data);
 	measure->ExecuteBang(args);

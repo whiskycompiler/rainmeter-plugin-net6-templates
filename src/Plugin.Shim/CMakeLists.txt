@@ -23,9 +23,9 @@ SET(PLUGIN_NAME "TestPlugin" CACHE STRING "Name of the dotnet plugin folder and 
 
 project ("RainmeterPluginShim")
 
-# Include sub-projects.
+# Include sub-projects
 add_subdirectory ("RainmeterPluginShim")
 
-IF(CMAKE_BUILD_TYPE MATCHES DEBUG)
+IF(CMAKE_BUILD_TYPE MATCHES Debug)
    add_subdirectory ("TestConsole")
-ENDIF(CMAKE_BUILD_TYPE MATCHES DEBUG)
+ENDIF()

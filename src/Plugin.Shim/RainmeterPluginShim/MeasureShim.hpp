@@ -34,14 +34,17 @@ public:
 	Measure(string_t binaryPath, string_t runtimeConfigPath, string_t dotnetPluginType);
 	~Measure();
 
-	void Initialize(void* rainmeter);
+	void Initialize(void* rm);
 	double Update();
-	void Reload(void* rainmeter, double* maxValue);
+	void Reload(void* rm, double* maxValue);
 	LPCWSTR GetString();
 	void ExecuteBang(LPCWSTR args);
 	void Finalize();
 
 private:
+	// Pointer to the rainmeter measure
+	void* rainmeter = nullptr;
+
 	// Data of the dotnet plugin that is held by the shim which is held by rainmeter
 	void* data = nullptr;
 

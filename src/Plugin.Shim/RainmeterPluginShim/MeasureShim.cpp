@@ -19,6 +19,8 @@
 
 #include "MeasureShim.hpp"
 
+#include <format>
+
 Measure::Measure(string_t binaryPath, string_t runtimeConfigPath, string_t dotnetPluginType)
 	: binaryPath(std::move(binaryPath))
 	, runtimeConfigPath(std::move(runtimeConfigPath))
@@ -37,31 +39,30 @@ Measure::~Measure()
 	netHost = nullptr;
 
 	data = nullptr; // this is freed by the .NET plugin
+	rainmeter = nullptr; // this is freed by rainmeter
 }
 
-void Measure::Initialize(void* rainmeter)
+void Measure::Initialize(void* rm)
 {
+	this->rainmeter = rm;
 	if (EnsureInitializedNetMethodPointer(L"Initialize", L"InitializeDelegate", reinterpret_cast<void**>(&initialize)))
 	{
 		initialize(&data, rainmeter);
 	}
 	else
 	{
-		// TODO: logging
+		RmLog(rainmeter, LOG_ERROR, L"Shim failed to get pointer to the Initialize method of the C# plugin!");
 	}
 }
 
 double Measure::Update()
 {
-	if(EnsureInitializedNetMethodPointer(L"Update", L"UpdateDelegate", reinterpret_cast<void**>(&update)))
+	if (EnsureInitializedNetMethodPointer(L"Update", L"UpdateDelegate", reinterpret_cast<void**>(&update)))
 	{
 		return update(data);
 	}
-	else
-	{
-		// TODO: logging
-	}
 
+	RmLog(rainmeter, LOG_ERROR, L"Shim failed to get pointer to the Update method of the C# plugin!");
 	return -1.0;
 }
 
@@ -73,21 +74,23 @@ void Measure::Finalize()
 	}
 	else
 	{
-		// TODO: logging
+		RmLog(rainmeter, LOG_ERROR, L"Shim failed to get pointer to the Finalize method of the C# plugin!");
 	}
 
+	rainmeter = nullptr;
 	data = nullptr;
 }
 
-void Measure::Reload(void* rainmeter, double* maxValue)
+void Measure::Reload(void* rm, double* maxValue)
 {
+	rainmeter = rm;
 	if (EnsureInitializedNetMethodPointer(L"Reload", L"ReloadDelegate", reinterpret_cast<void**>(&reload)))
 	{
 		reload(data, rainmeter, maxValue);
 	}
 	else
 	{
-		// TODO: logging
+		RmLog(rainmeter, LOG_ERROR, L"Shim failed to get pointer to the Reload method of the C# plugin!");
 	}
 }
 
@@ -97,15 +100,12 @@ LPCWSTR Measure::GetString()
 	{
 		return getString(data);
 	}
-	else
-	{
-		// TODO: logging
-	}
 
+	RmLog(rainmeter, LOG_ERROR, L"Shim failed to get pointer to the GetString method of the C# plugin!");
 	return nullptr;
 }
 
-void Measure::ExecuteBang(LPCWSTR args)
+void Measure::ExecuteBang(const LPCWSTR args)
 {
 	if (EnsureInitializedNetMethodPointer(L"ExecuteBang", L"ExecuteBangDelegate", reinterpret_cast<void**>(&executeBang)))
 	{
@@ -113,7 +113,7 @@ void Measure::ExecuteBang(LPCWSTR args)
 	}
 	else
 	{
-		// TODO: logging
+		RmLog(rainmeter, LOG_ERROR, L"Shim failed to get pointer to the ExecuteBang method of the C# plugin!");
 	}
 }
 
@@ -126,7 +126,7 @@ bool Measure::EnsureInitializedNetMethodPointer(
 	{
 		string_t* fullDelegateName;
 		GetFullDelegateName(delegateName, &fullDelegateName);
-		netHost->GetMethodFromAssembly(
+		const auto result = netHost->GetMethodFromAssembly(
 			binaryPath.c_str(),
 			runtimeConfigPath.c_str(),
 			dotnetPluginType.c_str(),
@@ -137,8 +137,23 @@ bool Measure::EnsureInitializedNetMethodPointer(
 		delete fullDelegateName;
 		fullDelegateName = nullptr;
 
-		if(*methodPointer == nullptr)
+		if(result != NETHOST_SUCCESS)
 		{
+			RmLog(rainmeter, LOG_ERROR, std::format(
+				L"Failed to get C# plugin method '{}'! ErrorCode: {}",
+				entryPointName,
+				result).c_str());
+
+			return false;
+		}
+
+		if (*methodPointer == nullptr)
+		{
+			RmLog(rainmeter, LOG_ERROR, std::format(
+				L"Failed to get C# plugin method '{}'! Got nullptr.",
+				entryPointName,
+				result).c_str());
+
 			return false;
 		}
 	}
