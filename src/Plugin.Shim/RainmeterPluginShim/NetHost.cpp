@@ -38,9 +38,13 @@ int NetHost::GetMethodFromAssembly(
 	void** methodPointer)
 {
 	// STEP 1: Load HostFxr and get exported hosting functions
-	if (!IsHostFxrLoaded() && !LoadHostFxr())
+	if (!IsHostFxrLoaded())
 	{
-		return NETHOST_ERROR_LOADFXR;
+		const int result = LoadHostFxr();
+		if(result != NETHOST_SUCCESS)
+		{
+			return result;
+		}
 	}
 
 	// STEP 2: Initialize and start the .NET Core runtime
@@ -69,23 +73,28 @@ int NetHost::GetMethodFromAssembly(
 
 
 // Using the nethost library, discover the location of hostfxr and get exports
-bool NetHost::LoadHostFxr()
+int NetHost::LoadHostFxr()
 {
 	// Pre-allocate a large buffer for the path to hostfxr
 	char_t buffer[MAX_PATH];
 	size_t buffer_size = sizeof buffer / sizeof(char_t);
 	if (get_hostfxr_path(buffer, &buffer_size, nullptr) != 0)
 	{
-		return false;
+		return NETHOST_ERROR_GET_HOSTFXR_PATH;
 	}
 
 	// Load hostfxr and get desired exports
-	void* lib = SafeLoadLibrary(buffer);
+	const HMODULE lib = LoadLibraryW(buffer);
+	if(lib == nullptr)
+	{
+		return NETHOST_ERROR_LOAD_HOSTFXR;
+	}
+
 	init_fptr = reinterpret_cast<hostfxr_initialize_for_runtime_config_fn>(GetExport(lib, "hostfxr_initialize_for_runtime_config"));
 	get_delegate_fptr = reinterpret_cast<hostfxr_get_runtime_delegate_fn>(GetExport(lib, "hostfxr_get_runtime_delegate"));
 	close_fptr = reinterpret_cast<hostfxr_close_fn>(GetExport(lib, "hostfxr_close"));
 
-	return IsHostFxrLoaded();
+	return IsHostFxrLoaded() ? NETHOST_SUCCESS : NETHOST_ERROR_GET_EXPORT;
 }
 
 // Load and initialize .NET Core and get desired function pointer for scenario
@@ -129,16 +138,8 @@ bool NetHost::IsHostFxrLoaded() const
 	return init_fptr && get_delegate_fptr && close_fptr;
 }
 
-void* NetHost::SafeLoadLibrary(const char_t* path)
+void* NetHost::GetExport(const HMODULE hLib, const char* name)
 {
-	const HMODULE h = LoadLibraryW(path);
-	assert(h != nullptr); // TODO: remove and implement meaningful error handling
-	return h;
-}
-
-void* NetHost::GetExport(void* hLib, const char* name)
-{
-	const FARPROC f = GetProcAddress(static_cast<HMODULE>(hLib), name);
-	assert(f != nullptr); // TODO: remove and implement meaningful error handling
+	const FARPROC f = GetProcAddress(hLib, name);
 	return reinterpret_cast<void*>(f);
 }

@@ -21,34 +21,12 @@
 #include "include.hpp"
 
 constexpr auto NETHOST_SUCCESS = 0;
-constexpr auto NETHOST_ERROR_LOADFXR = 1;
+constexpr auto NETHOST_ERROR_LOAD_HOSTFXR = 1;
 constexpr auto NETHOST_ERROR_LOADFUNC = 2;
 constexpr auto NETHOST_ERROR_HOSTFXR_RUNTIME_INIT = 3;
 constexpr auto NETHOST_ERROR_GET_RUNTIME_DELEGATE = 4;
-
-struct AssemblyInfo
-{
-	const string_t* binaryPath;
-	const string_t* runtimeConfigPath;
-	const string_t* dotnetType;
-	const string_t* methodName;
-	const string_t* delegateName;
-
-	~AssemblyInfo()
-	{
-		delete binaryPath;
-		delete runtimeConfigPath;
-		delete dotnetType;
-		delete methodName;
-		delete delegateName;
-
-		binaryPath = nullptr;
-		runtimeConfigPath = nullptr;
-		dotnetType = nullptr;
-		methodName = nullptr;
-		delegateName = nullptr;
-	}
-};
+constexpr auto NETHOST_ERROR_GET_HOSTFXR_PATH = 5;
+constexpr auto NETHOST_ERROR_GET_EXPORT = 6;
 
 class NetHost
 {
@@ -68,13 +46,12 @@ private:
 	hostfxr_get_runtime_delegate_fn get_delegate_fptr = nullptr;
 	hostfxr_close_fn close_fptr = nullptr;
 
-	bool LoadHostFxr();
+	int LoadHostFxr();
 	[[nodiscard]] bool IsHostFxrLoaded() const;
 
 	int GetAssemblyFunctionLoader(
 		const char_t* config_path,
 		load_assembly_and_get_function_pointer_fn& loadAssemblyAndGetFunction);
-
-	static void* SafeLoadLibrary(const char_t* path);
-	static void* GetExport(void* hLib, const char* name);
+	
+	static void* GetExport(HMODULE hLib, const char* name);
 };
