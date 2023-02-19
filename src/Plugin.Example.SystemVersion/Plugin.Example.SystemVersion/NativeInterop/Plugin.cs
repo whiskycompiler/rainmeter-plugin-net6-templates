@@ -72,8 +72,15 @@ public static class Plugin
         }
 #endif
 
-        measurePointer = GCHandle.ToIntPtr(GCHandle.Alloc(
-            new Measure(measureApiProxy)));
+        try
+        {
+            var measure = new Measure(measureApiProxy);
+            measurePointer = GCHandle.ToIntPtr(GCHandle.Alloc(measure));
+        }
+        catch (Exception e)
+        {
+            measureApiProxy.Log(RainmeterLogLevel.Error, $"Failed to initialize Measure! {e}");
+        }
     }
 
     /// <summary>

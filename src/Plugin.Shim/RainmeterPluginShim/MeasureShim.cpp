@@ -48,6 +48,10 @@ void Measure::Initialize(void* rm)
 	if (EnsureInitializedNetMethodPointer(L"Initialize", L"InitializeDelegate", reinterpret_cast<void**>(&initialize)))
 	{
 		initialize(&data, rainmeter);
+		if (data == nullptr)
+		{
+			RmLog(rainmeter, LOG_ERROR, L"Measure initialization failed! Shim received nullptr from .NET plugin.");
+		}
 	}
 	else
 	{
@@ -59,10 +63,18 @@ double Measure::Update()
 {
 	if (EnsureInitializedNetMethodPointer(L"Update", L"UpdateDelegate", reinterpret_cast<void**>(&update)))
 	{
-		return update(data);
+		if (data != nullptr)
+		{
+			return update(data);
+		}
+
+		RmLog(rainmeter, LOG_WARNING, L"Update was not executed because the Measure is not properly initialized!");
+	}
+	else
+	{
+		RmLog(rainmeter, LOG_ERROR, L"Shim failed to get pointer to the Update method of the C# plugin!");
 	}
 
-	RmLog(rainmeter, LOG_ERROR, L"Shim failed to get pointer to the Update method of the C# plugin!");
 	return -1.0;
 }
 
@@ -70,7 +82,14 @@ void Measure::Finalize()
 {
 	if (EnsureInitializedNetMethodPointer(L"Finalize", L"FinalizeDelegate", reinterpret_cast<void**>(&finalize)))
 	{
-		finalize(data);
+		if (data != nullptr)
+		{
+			finalize(data);
+		}
+		else
+		{
+			RmLog(rainmeter, LOG_WARNING, L"Finalize was not executed because the Measure is not properly initialized!");
+		}
 	}
 	else
 	{
@@ -86,7 +105,14 @@ void Measure::Reload(void* rm, double* maxValue)
 	rainmeter = rm;
 	if (EnsureInitializedNetMethodPointer(L"Reload", L"ReloadDelegate", reinterpret_cast<void**>(&reload)))
 	{
-		reload(data, rainmeter, maxValue);
+		if (data != nullptr)
+		{
+			reload(data, rainmeter, maxValue);
+		}
+		else
+		{
+			RmLog(rainmeter, LOG_WARNING, L"Reload was not executed because the Measure is not properly initialized!");
+		}
 	}
 	else
 	{
@@ -98,10 +124,18 @@ LPCWSTR Measure::GetString()
 {
 	if (EnsureInitializedNetMethodPointer(L"GetString", L"GetStringDelegate", reinterpret_cast<void**>(&getString)))
 	{
-		return getString(data);
+		if (data != nullptr)
+		{
+			return getString(data);
+		}
+
+		RmLog(rainmeter, LOG_WARNING, L"GetString was not executed because the Measure is not properly initialized!");
+	}
+	else
+	{
+		RmLog(rainmeter, LOG_ERROR, L"Shim failed to get pointer to the GetString method of the C# plugin!");
 	}
 
-	RmLog(rainmeter, LOG_ERROR, L"Shim failed to get pointer to the GetString method of the C# plugin!");
 	return nullptr;
 }
 
@@ -109,7 +143,14 @@ void Measure::ExecuteBang(const LPCWSTR args)
 {
 	if (EnsureInitializedNetMethodPointer(L"ExecuteBang", L"ExecuteBangDelegate", reinterpret_cast<void**>(&executeBang)))
 	{
-		executeBang(data, args);
+		if (data != nullptr)
+		{
+			executeBang(data, args);
+		}
+		else
+		{
+			RmLog(rainmeter, LOG_WARNING, L"ExecuteBang was not executed because the Measure is not properly initialized!");
+		}
 	}
 	else
 	{
@@ -126,7 +167,12 @@ LPCWSTR Measure::CutomFunc(const int argc, const WCHAR* argv[])
 	// You can keep the "delegateName" as is if you want (signature of all functions is identical after all).
 	if (EnsureInitializedNetMethodPointer(L"CustomFunc", L"CustomFuncDelegate", reinterpret_cast<void**>(&customFunc)))
 	{
-		return customFunc(data, argc, argv);
+		if (data != nullptr)
+		{
+			return customFunc(data, argc, argv);
+		}
+
+		RmLog(rainmeter, LOG_WARNING, L"CustomFunc was not executed because the Measure is not properly initialized!");
 	}
 
 	RmLog(rainmeter, LOG_ERROR, L"Shim failed to get pointer to the CustomFunc method of the C# plugin!");
