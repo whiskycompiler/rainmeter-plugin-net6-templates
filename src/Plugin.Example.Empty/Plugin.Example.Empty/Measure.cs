@@ -60,6 +60,9 @@ public sealed class Measure : IDisposable
     public void Dispose()
     {
         _rainmeterMeasure.Log(RainmeterLogLevel.Debug, nameof(Dispose));
+
+        _getStringBufferIntPtr.FreeUnmanagedHandle();
+        _customFunctionBufferIntPtr.FreeUnmanagedHandle();
     }
 
     /// <inheritdoc cref="NativeInterop.Plugin.Reload"/>
