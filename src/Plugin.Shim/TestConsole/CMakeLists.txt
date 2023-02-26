@@ -19,13 +19,10 @@
 
 cmake_minimum_required (VERSION 3.16)
 
-file(TO_CMAKE_PATH $ENV{RainmeterPluginSdkDir} RainmeterPluginSdkDir)
-file(TO_CMAKE_PATH $ENV{NetCoreNativeRuntimePackDir} NetCoreNativeRuntimePackDir)
-
 # Add directories with headers to include
 include_directories(
-	"${RainmeterPluginSdkDir}/API"
-	${NetCoreNativeRuntimePackDir}
+	"${RainmeterPluginSdkDir}/.."
+	"${NetCoreNativeRuntimePackDir}"
 	"${RainmeterPluginShim_SOURCE_DIR}"
 )
 
@@ -43,7 +40,7 @@ add_executable (
 # Declare lib files to link for the DLL
 target_link_libraries(
 	PluginShim
-	"${RainmeterPluginSdkDir}/API/x64/Rainmeter.lib"
+	"${RainmeterPluginSdkDir}/Rainmeter.lib"
 	"${NetCoreNativeRuntimePackDir}/nethost.lib"
 )
 

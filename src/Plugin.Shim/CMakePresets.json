@@ -29,7 +29,8 @@
                                                       "strategy":  "external"
                                                   },
                                  "cacheVariables":  {
-                                                        "CMAKE_BUILD_TYPE":  "Debug"
+                                                        "CMAKE_BUILD_TYPE":  "Debug",
+                                                        "TARGET_ARCHITECTURE":  "x64"
                                                     }
                              },
                              {
@@ -49,7 +50,8 @@
                                                       "strategy":  "external"
                                                   },
                                  "cacheVariables":  {
-                                                        "CMAKE_BUILD_TYPE":  "Debug"
+                                                        "CMAKE_BUILD_TYPE":  "Debug",
+                                                        "TARGET_ARCHITECTURE":  "x86"
                                                     }
                              },
                              {
@@ -63,8 +65,12 @@
                          ],
     "buildPresets":  [
                          {
-                             "name":  "default",
+                             "name":  "x64",
                              "configurePreset":  "x64-release"
+                         },
+                         {
+                             "name":  "x86",
+                             "configurePreset":  "x86-release"
                          }
                      ]
 }

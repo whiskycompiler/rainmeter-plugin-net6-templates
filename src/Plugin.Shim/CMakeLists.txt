@@ -25,6 +25,17 @@ SET(COPYRIGHT "@ 2023 - whiskycompiler" CACHE STRING "Copyright notice of the pl
 
 project ("RainmeterPluginShim")
 
+IF("${TARGET_ARCHITECTURE}" MATCHES "x64")
+	file(TO_CMAKE_PATH "$ENV{NetCoreNativeRuntimeX64PackDir}" NetCoreNativeRuntimePackDir)
+	file(TO_CMAKE_PATH "$ENV{RainmeterPluginSdkDir}/API/x64" RainmeterPluginSdkDir)
+ELSEIF("${TARGET_ARCHITECTURE}" MATCHES "x86")
+	file(TO_CMAKE_PATH "$ENV{NetCoreNativeRuntimeX86PackDir}" NetCoreNativeRuntimePackDir)
+	file(TO_CMAKE_PATH "$ENV{RainmeterPluginSdkDir}/API/x32" RainmeterPluginSdkDir)
+ELSE()
+	file(TO_CMAKE_PATH "$ENV{NetCoreNativeRuntimePackDir}" NetCoreNativeRuntimePackDir)
+	file(TO_CMAKE_PATH "$ENV{RainmeterPluginSdkDir}/API/x64" RainmeterPluginSdkDir)
+ENDIF()
+
 # Include sub-projects
 add_subdirectory ("RainmeterPluginShim")
 
